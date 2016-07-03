@@ -27,11 +27,4 @@ export default class Todo extends Backbone.Model {
       completed: false
     };
   }
-
-  // *Toggle the `completed` state of this todo item.*
-  toggle() {
-    this.save({
-      completed: !this.get('completed')
-    });
-  }
 }

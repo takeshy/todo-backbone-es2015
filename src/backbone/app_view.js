@@ -3,6 +3,7 @@ import $ from 'jquery';
 import _ from 'lodash';
 import TodoView from './todo_view';
 import {ENTER_KEY} from '../constants/key';
+import * as actions from '../redux/actions';
 // The Application class
 // ---------------------
 
@@ -25,6 +26,7 @@ export default class AppView extends Backbone.View {
 
     this.todos = options.todos;
     this.todoFilter = options.todoFilter;
+    this.store = options.store;
     // *At initialization, we bind to the relevant events on the `Todos`
     // collection, when items are added or changed. Kick things off by
     // loading any preexisting todos that might be saved in localStorage.*
@@ -34,10 +36,10 @@ export default class AppView extends Backbone.View {
     this.$main = this.$('#main');
 
     this.listenTo(this.todos, 'add', this.addOne);
-    this.listenTo(this.todos, 'reset', this.addAll);
-    this.listenTo(this.todos, 'sync', this.render);
+    this.listenTo(this.todos, 'all', this.render);
+    this.listenTo(this.todoFilter, 'all', this.render);
 
-    this.todos.fetch();
+    this.store.dispatch(actions.fetchAll());
   }
 
   // *Re-rendering the App just means refreshing the statistics— the rest of
@@ -71,7 +73,7 @@ export default class AppView extends Backbone.View {
   // *Add a single todo item to the list by creating a view for it, then
   // appending its element to the `<ul>`.*
   addOne(model) {
-    var view = new TodoView({ model:model, todoFilter: this.todoFilter }); // const
+    var view = new TodoView({ model:model, store: this.store, todoFilter: this.todoFilter }); // const
     $('#todo-list').append(view.render().el);
   }
 
@@ -96,19 +98,17 @@ export default class AppView extends Backbone.View {
     if (e.which !== ENTER_KEY || !this.$input.val().trim()) {
       return;
     }
-
-    this.todos.create(this.newAttributes());
+    this.store.dispatch(actions.createTodo(this.newAttributes()));
     this.$input.val('');
   }
 
   // *Clear all completed todo items and destroy their models.*
   clearCompleted() {
-    _.each(this.todos.completed(), model => model.destroy())
+    this.store.dispatch(actions.clearCompleted());
     return false;
   }
 
   toggleAllComplete() {
-    var completed = this.allCheckbox.checked; // const
-    this.todos.each(todo => todo.save({ completed }));
+    this.store.dispatch(actions.toggleAllComplete(this.allCheckbox.checked));
   }
 }

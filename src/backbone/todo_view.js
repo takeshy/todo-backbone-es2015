@@ -1,5 +1,6 @@
 import Backbone from 'backbone';
 import {ENTER_KEY} from '../constants/key';
+import * as actions from '../redux/actions';
 // Todo Item View class
 // --------------------
 
@@ -21,10 +22,12 @@ export default class TodoView extends Backbone.View {
     }
   }
   initialize(options){
+    this.store = options.store;
     this.todoFilter = options.todoFilter;
     this.listenTo(this.model, 'change', this.render);
     this.listenTo(this.model, 'destroy', this.remove);
     this.listenTo(this.todoFilter,'change', this.toggleVisible);
+    this.render();
   }
 
   // *Re-render the contents of the todo item.*
@@ -61,7 +64,7 @@ export default class TodoView extends Backbone.View {
 
   // *Toggle the `'completed'` state of the model.*
   toggleCompleted() {
-    this.model.toggle();
+    this.store.dispatch(actions.toggleTodo(this.model.id));
   }
 
   // *Switch this view into `'editing'` mode, displaying the input field.*
@@ -77,11 +80,10 @@ export default class TodoView extends Backbone.View {
     var title = this.input.val(); // const
 
     if (title) {
-      this.model.save({ title });
+      this.store.dispatch(actions.changeTitle(this.model.id, title));
     } else {
       this.clear();
     }
-
     this.$el.removeClass('editing');
   }
 
@@ -94,6 +96,6 @@ export default class TodoView extends Backbone.View {
 
   // *Remove the item and destroy the model.*
   clear() {
-    this.model.destroy();
+    this.store.dispatch(actions.destroyTodo(this.model.id));
   }
 }

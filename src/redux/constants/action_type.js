@@ -1,0 +1,8 @@
+export const FETCH_ALL = 'FETCH_ALL';
+export const CHANGE_FILTER = 'CHANGE_FILTER';
+export const TOGGLE_ALL_COMPLETE = 'TOGGLE_ALL_COMPLETE';
+export const CLEAR_COMPLETED = 'CLEAR_COMPLETED';
+export const CREATE_TODO = 'CREATE_TODO';
+export const TOGGLE_TODO = 'TOGGLE_TODO';
+export const CHANGE_TITLE = 'CHANGE_TITLE';
+export const DESTROY_TODO = 'DESTROY_TODO';

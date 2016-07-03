@@ -1,5 +1,4 @@
 import Backbone from 'backbone';
-import LocalStorage  from 'backbone.localStorage';
 import Todo from './todo';
 
 // TodoList Collection class
@@ -18,9 +17,6 @@ export default class TodoList extends Backbone.Collection {
 
     // *Hold a reference to this collection's model.*
     this.model = Todo;
-
-    // *Save all of the todo items under the `'todos'` namespace.*
-    this.localStorage = new LocalStorage('todos-traceur-backbone');
   }
 
   // *Filter down the list of all todo items that are finished.*

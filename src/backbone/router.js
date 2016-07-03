@@ -1,6 +1,6 @@
 import Backbone from 'backbone';
 import AppView from './app_view';
-
+import * as actions from '../redux/actions';
 // The Filters Router class
 // ------------------------
 
@@ -37,12 +37,14 @@ export default class Router extends Backbone.Router {
   //         return 'Hello, ' + firstName + ' ' + lastName;
   //     }
   initialize(options){
+    this.store = options.store;
     this.todoFilter = options.todoFilter;
     this.todos = options.todos;
-    new AppView({ todos: this.todos, todoFilter: this.todoFilter });
+    new AppView({ store: this.store, todos: this.todos, todoFilter: this.todoFilter });
   }
+
   filter(param = '') {
     // *Set the current filter to be used.*
-    this.todoFilter.set({ status: param });
+    this.store.dispatch(actions.changeFilter(param))
   }
 }
